@@ -42,4 +42,10 @@ public class userService {
         }
         return currentUser;
     }
+
+    // Hàm delete user
+    public void handleDeleteUser(long id) {
+        this.userRepository.deleteById(id);
+        ;
+    }
 }
