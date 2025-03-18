@@ -11,8 +11,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 public class userController {
     private final userService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public userController(userService userService) {
+    public userController(userService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // @ResponseEntity : Trả về phản hồi cho người dùng
@@ -39,9 +41,12 @@ public class userController {
     // this.userService.handleCreateUser(user);
     // return "create user";
     // }
+
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody User posrManUser) {
         // TODO: process POST request
+        // Mã hóa mk khi truyền vào database
+        posrManUser.setPassword(passwordEncoder.encode(posrManUser.getPassword()));
         this.userService.handleCreateUser(posrManUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
