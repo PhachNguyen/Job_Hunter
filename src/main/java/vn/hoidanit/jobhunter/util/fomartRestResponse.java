@@ -8,13 +8,19 @@ import org.springframework.http.server.ServletServerHttpResponse;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
+import vn.hoidanit.jobhunter.controller.AuthController;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.hoidanit.jobhunter.domain.restResponse;
 
 // Dùng @RestControllerAdvice or ControllerAdvice
 @ControllerAdvice
 public class fomartRestResponse implements ResponseBodyAdvice {
+
+    private final AuthController authController;
+
+    fomartRestResponse(AuthController authController) {
+        this.authController = authController;
+    }
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
@@ -35,6 +41,9 @@ public class fomartRestResponse implements ResponseBodyAdvice {
 
         restResponse<Object> res = new restResponse<Object>();
         res.setStatusCode(status);
+        if (body instanceof String) {
+            return body;
+        }
         // case error (200-399 is succes)
         if (status >= 400) {
             res.setError("CALL API FAILED");
