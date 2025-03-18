@@ -22,10 +22,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(c -> c.disable()) // Chưa hiểu phần này lắm
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers("/").permitAll()
-                                .anyRequest().authenticated())
+                                .anyRequest().permitAll())
+                .formLogin(f -> f.disable())
                 // Chuyển sang mô hình STATELESS vì mặc định cơ chế session là STATEFUL
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();

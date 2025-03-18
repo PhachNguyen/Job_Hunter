@@ -48,4 +48,9 @@ public class userService {
         this.userRepository.deleteById(id);
         ;
     }
+
+    // Hàm tìm kiếm email
+    public User handlerGetUserbyUserName(String username) {
+        return this.userRepository.findByEmail(username);
+    }
 }

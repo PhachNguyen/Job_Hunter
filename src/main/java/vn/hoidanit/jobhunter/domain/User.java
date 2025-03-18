@@ -1,5 +1,7 @@
 package vn.hoidanit.jobhunter.domain;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
