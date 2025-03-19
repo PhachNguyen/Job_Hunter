@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.config;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -34,9 +35,9 @@ public class customAuthenticationEntrypoint implements AuthenticationEntryPoint 
         restResponse<Object> res = new restResponse<Object>();
         res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
 
-        // String errorMessage = Optional.ofNullable(authException.getCause())
-        // .map(Throwable::getMessage)
-        // .orElse(authException.getMessage());
+        String errorMessage = Optional.ofNullable(authException.getCause()) // NULL
+                .map(Throwable::getMessage)
+                .orElse(authException.getMessage());
 
         res.setError(authException.getCause().getMessage());
         res.setMessage(

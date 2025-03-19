@@ -37,7 +37,7 @@ public class SecurityUtil {
         .issuedAt(now)
         .expiresAt(validity)
         .subject(authentication.getName())
-        .claim("AUTHORITIES_KEY", authentication)
+        .claim("AUTHORITIES_KEY", authentication) // 
         .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,

@@ -35,7 +35,8 @@ public class AuthController {
         // Tạo Token
         String access_token = this.SercurityUitl.createToken(authentication);
         // khi login
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // Authentication authentication =
+        // authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO res = new ResLoginDTO();
         res.setAccessToken(access_token);
