@@ -47,7 +47,7 @@ public class SecurityConfiguration {
             customAuthenticationEntrypoint customAuthenticationEntrypoint) throws Exception {
         http
                 .csrf(c -> c.disable()) // Chưa hiểu phần này lắm
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()) // Giup Spring Security sử dụng config đã định nghĩa trong CorsConfig
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers("/", "/login").permitAll()
