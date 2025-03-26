@@ -3,7 +3,9 @@ package vn.hoidanit.jobhunter.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
@@ -62,19 +64,21 @@ public class userService {
     // Phân trang :
     // Pageable : Đại diện cho thông tin về phân trang và sắp xếp dữ liệu. Lấy dữ
     // liệu theo từng trang
-    public resultPaginationDTO fetchAllUser(Pageable pageable) {
-        Page<User> pageUser = this.userRepository.findAll(pageable);
-        resultPaginationDTO rs = new resultPaginationDTO();
-        meta mt = new meta();
+    public resultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+        // Page<User> pageUser = this.userRepository.findAll(pageable); // Gọi db và
+        // phân trang
+        Page<User> pageUser = this.userRepository.findAll(spec, pageable);
+        resultPaginationDTO rs = new resultPaginationDTO(); // Tạo object DTO
+        meta mt = new meta(); // tạo metadata
 
-        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPage(pageable.getPageNumber() + 1); // Số trang hiện tại và
+        // PageRequest.of() //bắt đầu từ 0
         mt.setPageSize(pageable.getPageSize());
-
-        mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
+        mt.setPages(pageUser.getTotalPages()); // Số lượng phần tử trên mỗi trang
+        mt.setTotal(pageUser.getTotalElements()); // Tổng số trang
 
         rs.setMeta(mt);
-        rs.setResult(pageUser.getContent());
+        rs.setResult(pageUser.getContent()); // Trả về ds của trang hiện tại
         return rs;
     }
 }

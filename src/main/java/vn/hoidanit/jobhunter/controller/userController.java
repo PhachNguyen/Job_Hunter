@@ -2,6 +2,8 @@ package vn.hoidanit.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.resultPaginationDTO;
 import vn.hoidanit.jobhunter.service.userService;
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -58,12 +61,16 @@ public class userController {
     // Hàm show users
     @GetMapping("/users")
     public ResponseEntity<resultPaginationDTO> getUsers(
-            @RequestParam("current") Optional<String> currentOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
-        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
-        Pageable pageable = PageRequest.of(Integer.parseInt(sCurrent) - 1, Integer.parseInt(sPageSize));
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(pageable));
+            @Filter Specification<User> spec,
+            Pageable pageable) {
+        // @RequestParam("current") Optional<String> currentOptional,
+        // @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        // String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        // String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() :
+        // "";
+        // Pageable pageable = PageRequest.of(Integer.parseInt(sCurrent) - 1,
+        // Integer.parseInt(sPageSize));
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
     // PathVariable: check thông tin user
