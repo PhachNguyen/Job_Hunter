@@ -3,6 +3,7 @@ package vn.hoidanit.jobhunter.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,12 +33,13 @@ public class companyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.companyService.handleCreateCompany(reqCompany));
     }
 
-    // Hàm render thông tin
-    @GetMapping("/companies")
-    public List<Company> getCompanies() {
-        List<Company> Users = this.companyService.getAll();
-        return Users;
-    }
+    // // Hàm render thông tin
+    // @GetMapping("/companies")
+    // public ResposeEntity<List<Company>> getCompanies() {
+    // // List<Company> Users = this.companyService.getAll();
+    // return
+    // ResponseEntity.status(HttpStatus.OK).body(this.companyService.getAll());
+    // }
 
     // Hàm update thông tin
     @PutMapping("/companies")
