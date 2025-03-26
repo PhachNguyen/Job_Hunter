@@ -2,11 +2,16 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 
+import org.apache.catalina.security.SecurityUtil;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -30,6 +35,7 @@ public class Company {
     // Thuộc Java Time API dùng để đại diện cho một thời điểm chính xác theo UTC
     // khác với kiểu DATE là có thể tính toán đc thời gian còn DATE bắt buộc phải
     // dùng Caledar
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GTM +7")
     private Instant createdAt;
 
     private Instant updatedAt;
@@ -108,6 +114,14 @@ public class Company {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdBy = vn.hoidanit.jobhunter.util.SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? vn.hoidanit.jobhunter.util.SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        this.createdAt = Instant.now();
     }
 
 }
