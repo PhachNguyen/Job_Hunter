@@ -4,10 +4,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.resultPaginationDTO;
 import vn.hoidanit.jobhunter.service.userService;
-import vn.hoidanit.jobhunter.service.error.idInvalidException;
+
+import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
+import vn.hoidanit.jobhunter.util.error.idInvalidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +22,18 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
+@RequestMapping("/api/v1")
 public class userController {
     private final userService userService;
     private final PasswordEncoder passwordEncoder;
@@ -50,26 +56,28 @@ public class userController {
     // }
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User posrManUser) {
+    @ApiMessage("Create a new user ")
+    public ResponseEntity<User> createUser(@Valid @RequestBody User postManUser) throws idInvalidException {
         // TODO: process POST request
-        // Mã hóa mk khi truyền vào database
-        posrManUser.setPassword(passwordEncoder.encode(posrManUser.getPassword()));
-        this.userService.handleCreateUser(posrManUser);
+        // Mã hóa mk khi truyền vào database.
+        boolean isEmailExist = this.userService.isEmailExist(postManUser.getEmail());
+        if (isEmailExist) {
+            throw new idInvalidException(
+                    "Email: " + postManUser.getEmail() + " đã tồn tại vui lòng sử dụng email khác");
+        }
+        postManUser.setPassword(passwordEncoder.encode(postManUser.getPassword()));
+        this.userService.handleCreateUser(postManUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     // Hàm show users
     @GetMapping("/users")
+    // @CrossOrigin(origins = "http://localhost:3000")
+    @ApiMessage("Fetch all users")
     public ResponseEntity<resultPaginationDTO> getUsers(
             @Filter Specification<User> spec,
             Pageable pageable) {
-        // @RequestParam("current") Optional<String> currentOptional,
-        // @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        // String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
-        // String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() :
-        // "";
-        // Pageable pageable = PageRequest.of(Integer.parseInt(sCurrent) - 1,
-        // Integer.parseInt(sPageSize));
+
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
@@ -89,9 +97,11 @@ public class userController {
 
     // Hàm delete
     @DeleteMapping("/users/{id}")
+    @ApiMessage("Delete user by id")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws idInvalidException {
-        if (id >= 1500) {
-            throw new idInvalidException("ID không lớn hơn 1500");
+        User currentUser = this.userService.fetchUserById(id);
+        if (currentUser == null) {
+            throw new idInvalidException("Không tồn tại user có ID: " + currentUser.getId());
         }
         this.userService.handleDeleteUser(id);
         return ResponseEntity.noContent().build();

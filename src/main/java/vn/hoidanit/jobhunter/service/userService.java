@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.dto.meta;
 import vn.hoidanit.jobhunter.domain.dto.resultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.repository.userRepository;
 
 @Service
@@ -56,10 +57,62 @@ public class userService {
         ;
     }
 
-    // Hàm tìm kiếm email
     public User handlerGetUserbyUserName(String username) {
         return this.userRepository.findByEmail(username);
     }
+
+    // Hàm tìm kiếm email:
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    // Hàm để trả dữ liệu từ response
+    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
+        ResCreateUserDTO res = new ResCreateUserDTO();
+        // ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
+
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setCreatedAt(user.getCreatedAt());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+
+        // if (user.getCompany() != null) {
+        // com.setId(user.getCompany().getId());
+        // com.setName(user.getCompany().getName());
+        // res.setCompany(com);
+        // }
+        return res;
+    }
+    // Response user cho server :
+    // public ResUserDTO convertToResUserDTO(User user) {
+    // ResUserDTO res = new ResUserDTO();
+    // // ResUserDTO.CompanyUser com = new ResUserDTO.CompanyUser();
+    // // ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
+    // // if (user.getCompany() != null) {
+    // // com.setId(user.getCompany().getId());
+    // // com.setName(user.getCompany().getName());
+    // // res.setCompany(com);
+    // // }
+
+    // if (user.getRole() != null) {
+    // roleUser.setId(user.getRole().getId());
+    // roleUser.setName(user.getRole().getName());
+    // res.setRole(roleUser);
+    // }
+
+    // res.setId(user.getId());
+    // res.setEmail(user.getEmail());
+    // res.setName(user.getName());
+    // res.setAge(user.getAge());
+    // res.setUpdatedAt(user.getUpdatedAt());
+    // res.setCreatedAt(user.getCreatedAt());
+    // res.setGender(user.getGender());
+    // res.setAddress(user.getAddress());
+    // return res;
+    // }
 
     // Phân trang :
     // Pageable : Đại diện cho thông tin về phân trang và sắp xếp dữ liệu. Lấy dữ

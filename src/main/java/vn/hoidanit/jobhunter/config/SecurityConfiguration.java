@@ -26,6 +26,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 
 import vn.hoidanit.jobhunter.util.SecurityUtil;
+// Giúp bảo vệ API bằng token
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true) // Bảo mật
@@ -43,18 +44,23 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
+    public SecurityFilterChain filterChain(HttpSecurity http, // Cấu hình security của Spring Security
             customAuthenticationEntrypoint customAuthenticationEntrypoint) throws Exception {
         http
-                .csrf(c -> c.disable()) // Chưa hiểu phần này lắm
+                .csrf(c -> c.disable()) // Do đang dùng JWT nên k áp dụng trong mô hình Sateless
                 .cors(Customizer.withDefaults()) // Giup Spring Security sử dụng config đã định nghĩa trong CorsConfig
+                                                 // để FE React gọi API
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/login").permitAll()
+                                .requestMatchers("/", "/login", "/api/v1/login", "/api/users", "/api/v1/users",
+                                        "/users")
+                                .permitAll() // Cho phép k
+                                // cần phải
+                                // đăng nhập
                                 .anyRequest().authenticated()
                 // .anyRequest().permitAll())
                 )
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()) // Bật xác thực JWT
                         .authenticationEntryPoint(customAuthenticationEntrypoint))
                 // default exception
                 // .exceptionHandling(
@@ -63,14 +69,22 @@ public class SecurityConfiguration {
                 // .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
                 // custom
 
-                .formLogin(f -> f.disable())
+                .formLogin(f -> f.disable()) // Tắt login của Spring security
                 // Chuyển sang mô hình STATELESS vì mặc định cơ chế session là STATEFUL
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Chuyển
+                                                                                                               // sang
+                                                                                                               // mô
+                                                                                                               // hình
+                                                                                                               // StateLess
+                                                                                                               // để k
+                                                                                                               // lưu
+                                                                                                               // session
         return http.build();
 
     }
 
     // @FunctionalInterface
+    // Decode JWT
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(

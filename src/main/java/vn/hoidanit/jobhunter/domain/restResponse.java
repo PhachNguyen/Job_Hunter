@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.domain;
 
+// Execption :
 public class restResponse<T> {
     private int statusCode;
     private String error;

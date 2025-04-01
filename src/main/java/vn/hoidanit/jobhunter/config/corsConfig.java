@@ -8,7 +8,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-// Chuyển sang thành file cấu hình 
+// Chuyển sang thành file cấu hình  connect tới FE
 @Configuration
 public class corsConfig {
     @Bean
