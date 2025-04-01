@@ -1,0 +1,1 @@
+Trong Java Spring Security, Authentication là một interface đại diện cho thông tin xác thực của người dùng. Nó chứa các thông tin liên quan đến quá trình xác thực, như tên đăng nhập, mật khẩu (nếu có), và danh sách quyền (authorities) của người dùng

@@ -34,8 +34,8 @@ public class SecurityConfiguration {
     @Value("${hoidanit.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${hoidanit.jwt.token-validity-in-seconds}")
-    private String jwtKeyExpriration;
+    // @Value("${hoidanit.jwt.access-token-validity-in-seconds}")
+    // private String jwtKeyExpriration;
 
     // Mã hóa password
     @Bean

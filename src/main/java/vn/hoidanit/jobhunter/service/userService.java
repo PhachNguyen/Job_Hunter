@@ -134,4 +134,13 @@ public class userService {
         rs.setResult(pageUser.getContent()); // Trả về ds của trang hiện tại
         return rs;
     }
+
+    // Hàm Update Refresh_Token :
+    public void updateUserToken(String token, String email) {
+        User currentUser = this.handlerGetUserbyUserName(email);
+        if (currentUser != null) {
+            currentUser.setRefreshToken(token);
+            this.userRepository.save(currentUser);
+        }
+    }
 }

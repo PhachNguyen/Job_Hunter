@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
+
 // Lấy tham số môi trường 
 @Service
 public class SecurityUtil {
@@ -29,14 +31,17 @@ public class SecurityUtil {
     @Value("${hoidanit.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${hoidanit.jwt.token-validity-in-seconds}")
-    private long jwtKeyExpriration;
+    @Value("${hoidanit.jwt.access-token-validity-in-seconds}")
+    private long accessTokenExpriration;
+
+    @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
+    private long refreshTokenExpriration;
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) { // Hàm tạo token
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtKeyExpriration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpriration, ChronoUnit.SECONDS);
  // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
         .issuedAt(now)
@@ -48,7 +53,22 @@ public class SecurityUtil {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
         claims)).getTokenValue();
     }
-   
+    // Hàm tạo Refesh Token
+    public String createRefreshToken(String email, ResLoginDTO dto) { // Hàm tạo token
+        Instant now = Instant.now();
+        //  Tính toán thời gian exprired của một token 
+        Instant validity = now.plus(this.refreshTokenExpriration, ChronoUnit.SECONDS);
+ // @formatter:off
+        JwtClaimsSet claims = JwtClaimsSet.builder() // Xấy dựng các khai báo cho JWT
+        .issuedAt(now) // Thời điểm phát hành token là thời điểm hiện tại 
+        .expiresAt(validity)
+        .subject(email) // Chủ thể của token là tên đăng nhập của user
+        .claim("user", dto.getUser()) // 
+        .build();
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
+        claims)).getTokenValue();
+    }
         /**
          * Get the login of the current user.
          *
