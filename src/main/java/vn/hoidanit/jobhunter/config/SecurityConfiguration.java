@@ -52,8 +52,8 @@ public class SecurityConfiguration {
                                                  // để FE React gọi API
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/login", "/api/v1/login", "/api/users", "/api/v1/users",
-                                        "/users")
+                                .requestMatchers("/", "/login", "/api/v1/login","/api/v1/auth/login"
+                                        )
                                 .permitAll() // Cho phép k
                                 // cần phải
                                 // đăng nhập
@@ -99,6 +99,7 @@ public class SecurityConfiguration {
         };
     }
 
+// Mã hóa JWT
     @Bean
     public JwtEncoder jwtEncoder() {
         return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
@@ -115,7 +116,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("AUTHORITIES_KEY");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("Permission"); // Quyền hạn
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);

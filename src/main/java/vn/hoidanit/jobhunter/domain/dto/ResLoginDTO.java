@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+// Hàm resLoginDTO định dạng dữ liệu khi user login success
 @Getter
 @Setter
 public class ResLoginDTO {
@@ -15,7 +16,8 @@ public class ResLoginDTO {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public class UserLogin {
+    // Gán thành static
+    public static class UserLogin {
         private long id;
         private String email;
         private String name;

@@ -47,7 +47,7 @@ public class User {
 
     private String address;
 
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @Column(length = 4000)
     private String refreshToken;
 
     private Instant createdAt;
@@ -67,6 +67,7 @@ public class User {
     // @JoinColumn(name = "role_id")
     // private Role role;
 
+    // Set Create
     @PrePersist
     public void handleBeforeCreate() {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true

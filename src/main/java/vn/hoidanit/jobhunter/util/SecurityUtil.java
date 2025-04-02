@@ -2,6 +2,8 @@ package vn.hoidanit.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -39,15 +41,20 @@ public class SecurityUtil {
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
-    public String createAccessToken(Authentication authentication) { // Hàm tạo token
+    public String createAccessToken(Authentication authentication,ResLoginDTO.UserLogin dto) { // Hàm tạo token
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpriration, ChronoUnit.SECONDS);
+        List<String> listAuthorities = new ArrayList<String>();
+        listAuthorities.add("ROLE_USER_CREATE");
+        listAuthorities.add("ROLE_USER_UPDATE");
  // @formatter:off
+//        Nội dung Payload
         JwtClaimsSet claims = JwtClaimsSet.builder()
         .issuedAt(now)
         .expiresAt(validity)
         .subject(authentication.getName())
-        .claim("AUTHORITIES_KEY", authentication) // 
+                .claim("user",dto)
+                .claim("Permission",listAuthorities) //
         .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,

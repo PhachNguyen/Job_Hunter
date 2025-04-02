@@ -15,8 +15,9 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
-@Table(name = "companies")
 @Entity
+@Table(name = "companies")
+
 
 public class Company {
     @Id
@@ -26,7 +27,7 @@ public class Company {
     @NotBlank(message = "name không được để trống")
     private String name;
 
-    @Column(columnDefinition = "MEDIUMTEXT") // Dùng String sẽ bị limit 255 character
+    @Column(length = 4000)// Dùng String sẽ bị limit 255 character and Oracle k hỗ trợ ColumDefinication="MEDIUMTEXT"
     private String description;
 
     private String address;
