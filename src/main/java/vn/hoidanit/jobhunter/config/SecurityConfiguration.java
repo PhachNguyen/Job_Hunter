@@ -52,8 +52,8 @@ public class SecurityConfiguration {
                                                  // để FE React gọi API
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/login", "/api/v1/login","/api/v1/auth/login"
-                                        )
+                                .requestMatchers("/", "/login", "/api/v1/login","/api/v1/auth/login",
+                                        "/api/v1/auth/refresh" )
                                 .permitAll() // Cho phép k
                                 // cần phải
                                 // đăng nhập

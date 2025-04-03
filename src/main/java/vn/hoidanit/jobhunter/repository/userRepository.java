@@ -20,4 +20,6 @@ public interface userRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findByEmail(String email);
 
     boolean existsByEmail(String email);
+    // Hàm tm kiếm Token and Email
+    User findByRefreshTokenAndEmail(String token,String email);
 }
